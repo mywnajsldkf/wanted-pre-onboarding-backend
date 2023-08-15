@@ -14,11 +14,13 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private static final String AT = "@";
+    private static final int MIN_PASSWORD_LENGTH = 8;
     private final UserRepository userRepository;
 
     @Override
     public void createUser(UserCreateRequest userCreateRequest) {
         validateEmailAddress(userCreateRequest.getEmail());
+        validatePasswordLength(userCreateRequest.getPassword());
         UserEntity userEntity = UserConverter.to(userCreateRequest);
         userRepository.save(userEntity);
     }
@@ -26,6 +28,12 @@ public class UserServiceImpl implements UserService {
     private void validateEmailAddress(String email) {
         if (!email.matches(AT)) {
             throw new InvalidException(ExceptionMessage.INVALID_EMAIL_ADDRESS.getMessage());
+        }
+    }
+
+    private void validatePasswordLength(String password) {
+        if (password.length() < MIN_PASSWORD_LENGTH) {
+            throw new InvalidException(ExceptionMessage.INVALID_PASSWORD_LENGTH.getMessage());
         }
     }
 }
