@@ -8,20 +8,22 @@ import com.example.board.user.model.request.UserCreateRequest;
 import com.example.board.user.model.response.UserInfoResponse;
 import com.example.board.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
     private static final String AT = "@";
     private static final int MIN_PASSWORD_LENGTH = 8;
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
     @Override
     public UserInfoResponse createUser(UserCreateRequest userCreateRequest) {
         validateEmailAddress(userCreateRequest.getEmail());
         validatePasswordLength(userCreateRequest.getPassword());
+        userCreateRequest.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
         UserEntity userEntity = UserConverter.to(userCreateRequest);
         userRepository.save(userEntity);
 
