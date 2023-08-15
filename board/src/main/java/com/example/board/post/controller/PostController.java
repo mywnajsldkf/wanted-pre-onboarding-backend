@@ -25,7 +25,15 @@ public class PostController {
 
     @GetMapping
     @ResponseBody
-    public ApiResponse<ApiResponse.SuccessBody<Page<PostInfoResponse>>> findAllPost(@RequestParam int page, @RequestParam int size) {
+    public ApiResponse<ApiResponse.SuccessBody<Page<PostInfoResponse>>> findAllPost(
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size) {
         return ApiResponseGenerator.success(postService.findAllPost(page, size), HttpStatus.OK, MessageCode.SUCCESS);
+    }
+
+    @GetMapping("/detail")
+    @ResponseBody
+    public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> findPost(@RequestParam(name = "postId") Long postId) {
+        return ApiResponseGenerator.success(postService.findPost(postId), HttpStatus.OK, MessageCode.SUCCESS);
     }
 }
