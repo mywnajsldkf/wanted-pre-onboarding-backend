@@ -36,4 +36,10 @@ public class PostController {
     public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> findPost(@RequestParam(name = "postId") Long postId) {
         return ApiResponseGenerator.success(postService.findPost(postId), HttpStatus.OK, MessageCode.SUCCESS);
     }
+
+    @DeleteMapping()
+    @ResponseBody
+    public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> deletePost(@RequestParam(name = "postId") Long postId) {
+        return ApiResponseGenerator.success(postService.deletePost(postId), HttpStatus.OK, MessageCode.RESOURCE_DELETED);
+    }
 }
