@@ -29,4 +29,10 @@ public class PostServiceImpl implements PostService {
         return postInfoResponses;
      }
 
+    @Override
+    public PostInfoResponse findPost(Long postId) {
+        PostEntity postEntity = postRepository.findById(postId).get();
+        return PostConverter.from(postEntity);
+    }
+
 }

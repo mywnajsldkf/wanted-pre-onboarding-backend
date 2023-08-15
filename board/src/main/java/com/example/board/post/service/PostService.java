@@ -7,4 +7,5 @@ import org.springframework.data.domain.Page;
 public interface PostService {
     PostInfoResponse createPost(PostCreateRequest postCreateRequest);
     Page<PostInfoResponse> findAllPost(Integer page, Integer size);
+    PostInfoResponse findPost(Long postId);
 }
