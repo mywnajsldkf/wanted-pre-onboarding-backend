@@ -7,6 +7,7 @@ import com.example.board.support.ApiResponse;
 import com.example.board.support.ApiResponseGenerator;
 import com.example.board.support.MessageCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,5 +21,11 @@ public class PostController {
     @ResponseBody
     public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> createPost(@RequestBody PostCreateRequest request) {
         return ApiResponseGenerator.success(postService.createPost(request), HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
+    }
+
+    @GetMapping
+    @ResponseBody
+    public ApiResponse<ApiResponse.SuccessBody<Page<PostInfoResponse>>> findAllPost(@RequestParam int page, @RequestParam int size) {
+        return ApiResponseGenerator.success(postService.findAllPost(page, size), HttpStatus.OK, MessageCode.SUCCESS);
     }
 }
