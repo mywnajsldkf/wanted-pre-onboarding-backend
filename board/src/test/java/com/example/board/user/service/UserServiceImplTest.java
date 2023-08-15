@@ -32,4 +32,21 @@ class UserServiceImplTest {
                 .isInstanceOf(InvalidException.class)
                 .hasMessageContaining(ExceptionMessage.INVALID_EMAIL_ADDRESS.getMessage());
     }
+
+    @Test
+    @DisplayName("비밀번호가 8글자 미만이면, 예외를 던진다.")
+    void throwExceptionIfPasswordIsUnder8() {
+        // given
+        String testEmail = "test@test.com";
+        String testPassword = "qwer";
+
+        UserServiceImpl testUserService = new UserServiceImpl(userRepository);
+        UserCreateRequest testUserCreateRequest = new UserCreateRequest(testEmail, testPassword);
+
+        // when & then
+        assertThatThrownBy(() -> testUserService.createUser(testUserCreateRequest))
+                .isInstanceOf(InvalidException.class)
+                .hasMessageContaining(ExceptionMessage.INVALID_PASSWORD_LENGTH.getMessage());
+    }
+
 }
