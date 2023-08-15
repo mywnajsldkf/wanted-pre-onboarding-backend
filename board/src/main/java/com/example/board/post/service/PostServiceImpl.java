@@ -35,4 +35,12 @@ public class PostServiceImpl implements PostService {
         return PostConverter.from(postEntity);
     }
 
+    @Override
+    public PostInfoResponse deletePost(Long postId) {
+        PostEntity postEntity = postRepository.findById(postId).get();
+        postRepository.deleteById(postId);
+        return PostConverter.from(postEntity);
+    }
+
+
 }
