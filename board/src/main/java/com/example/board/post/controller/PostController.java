@@ -1,6 +1,7 @@
 package com.example.board.post.controller;
 
 import com.example.board.post.model.request.PostCreateRequest;
+import com.example.board.post.model.request.PostUpdateRequest;
 import com.example.board.post.model.response.PostInfoResponse;
 import com.example.board.post.service.PostServiceImpl;
 import com.example.board.support.ApiResponse;
@@ -35,6 +36,13 @@ public class PostController {
     @ResponseBody
     public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> findPost(@RequestParam(name = "postId") Long postId) {
         return ApiResponseGenerator.success(postService.findPost(postId), HttpStatus.OK, MessageCode.SUCCESS);
+    }
+
+    @PatchMapping()
+    @ResponseBody
+    public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> updatePost(@RequestParam(name = "postId") Long postId,
+                                                                             @RequestBody PostUpdateRequest postUpdateRequest) {
+        return ApiResponseGenerator.success(postService.updatePost(postId, postUpdateRequest), HttpStatus.OK, MessageCode.SUCCESS);
     }
 
     @DeleteMapping()
