@@ -1,10 +1,7 @@
 package com.example.board.user.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Builder
 @Entity
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
