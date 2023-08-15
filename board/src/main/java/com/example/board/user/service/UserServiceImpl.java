@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateEmailAddress(String email) {
-        if (!email.matches(AT)) {
+        if (!email.contains(AT)) {
             throw new InvalidException(ExceptionMessage.INVALID_EMAIL_ADDRESS.getMessage());
         }
     }
