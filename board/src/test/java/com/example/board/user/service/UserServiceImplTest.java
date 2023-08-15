@@ -19,7 +19,7 @@ class UserServiceImplTest {
 
     @Test
     @DisplayName("이메일에 '@'포함되어 있지 않으면, 예외를 던진다.")
-    void ifEmailIsNotContainAtThrowException() {
+    void throwExceptionIfEmailDoesNotContainAt() {
         // given
         String testEmail = "testtest.com";
         String testPassword = "qwer1234";
