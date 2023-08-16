@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoResponse createUser(UserCreateRequest userCreateRequest) {
         validateEmailAddress(userCreateRequest.getEmail());
+        validateDuplicatedEmail(userCreateRequest.getEmail());
         validatePasswordLength(userCreateRequest.getPassword());
         userCreateRequest.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
         UserEntity userEntity = UserConverter.to(userCreateRequest);
@@ -39,21 +40,33 @@ public class UserServiceImpl implements UserService {
         validateEmailAddress(userLoginRequest.getEmail());
         validatePasswordLength(userLoginRequest.getPassword());
         TokenInfoResponse tokenInfoResponse = new TokenInfoResponse();
-        if (userRepository.findUserEntityByEmail(userLoginRequest.getEmail()) == null) {
-            // TODO: 커스텀 exception으로 수정
-            throw new RuntimeException("가입자 정보가 없습니다.");
-        }
+        validateUserIsExists(userLoginRequest.getEmail());
+        validateUserPassword(userLoginRequest.getEmail(), userLoginRequest.getPassword());
 
-        if (!passwordEncoder.matches(userLoginRequest.getPassword(), userRepository.findUserEntityByEmail(userLoginRequest.getEmail()).getPassword())) {
-            // TODO: 커스텀 exception으로 수정
-            throw new RuntimeException("가입자 정보가 없습니다.");
-        }
         String accessToken = jwtTokenProvider.createAuthToken(userLoginRequest.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken(userLoginRequest.getEmail());
         return tokenInfoResponse.builder().
                 accessToken(accessToken).
                 refreshToken(refreshToken).
                 build();
+    }
+
+    private void validateDuplicatedEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new InvalidException(ExceptionMessage.DUPLICATED_EMAIL.getMessage());
+        }
+    }
+
+    private void validateUserPassword(String email, String password) {
+        if (!passwordEncoder.matches(password, userRepository.findUserEntityByEmail(email).getPassword())) {
+            throw new RuntimeException(ExceptionMessage.PASSWORD_IS_NOT_CORRECT.getMessage());
+        }
+    }
+
+    private void validateUserIsExists(String email) {
+        if (userRepository.findUserEntityByEmail(email) == null) {
+            throw new InvalidException(ExceptionMessage.USERINFO_IS_NOT_EXIST.getMessage());
+        }
     }
 
     private void validateEmailAddress(String email) {
