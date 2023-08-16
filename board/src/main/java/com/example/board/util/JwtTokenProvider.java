@@ -39,16 +39,16 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Integer parseJwtToken(String token) {
+    public String parseJwtToken(String token) {
         String payloadJWT = token.split("\\.")[1];
         Base64.Decoder decoder = Base64.getUrlDecoder();
 
         final String payload = new String(decoder.decode(payloadJWT));
         JsonParser jsonParser = new BasicJsonParser();
         Map<String, Object> jsonArray = jsonParser.parseMap(payload);
-        Integer userId = Integer.valueOf(jsonArray.get("email").toString());
+        String email = jsonArray.get("email").toString();
 
-        return userId;
+        return email;
     }
 
     private String removeBearer(String token) {
