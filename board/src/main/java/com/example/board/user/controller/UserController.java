@@ -8,7 +8,8 @@ import com.example.board.user.model.request.UserLoginRequest;
 import com.example.board.user.model.response.TokenInfoResponse;
 import com.example.board.user.model.response.UserInfoResponse;
 import com.example.board.user.service.UserServiceImpl;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 public class UserController {
     private final UserServiceImpl userService;
-    private final HttpSession session;
 
     @PostMapping()
     @ResponseBody
@@ -28,9 +28,10 @@ public class UserController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ApiResponse<ApiResponse.SuccessBody<TokenInfoResponse>> loginUser(@RequestBody UserLoginRequest request) {
+    public ApiResponse<ApiResponse.SuccessBody<TokenInfoResponse>> loginUser(@RequestBody UserLoginRequest request, HttpServletResponse response) {
         TokenInfoResponse tokenInfoResponse = userService.loginUser(request);
-        session.setAttribute("token", tokenInfoResponse.getAccessToken());
+        Cookie cookie = new Cookie("token", tokenInfoResponse.getAccessToken());
+        response.addCookie(cookie);
         return ApiResponseGenerator.success(tokenInfoResponse, HttpStatus.OK, MessageCode.SUCCESS);
     }
 }
