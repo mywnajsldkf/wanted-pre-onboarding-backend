@@ -3,6 +3,7 @@ package com.example.board.post.service;
 import com.example.board.post.converter.PostConverter;
 import com.example.board.post.entity.PostEntity;
 import com.example.board.post.model.request.PostCreateRequest;
+import com.example.board.post.model.request.PostUpdateRequest;
 import com.example.board.post.model.response.PostInfoResponse;
 import com.example.board.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,32 @@ public class PostServiceImpl implements PostService {
         Page<PostInfoResponse> postInfoResponses = postEntities.map(postEntity -> new PostInfoResponse(postEntity));
         return postInfoResponses;
      }
+
+    @Override
+    public PostInfoResponse findPost(Long postId) {
+        PostEntity postEntity = postRepository.findById(postId).get();
+        return PostConverter.from(postEntity);
+    }
+
+    @Override
+    public PostInfoResponse updatePost(Long postId, PostUpdateRequest postUpdateRequest) {
+        PostEntity postEntity = postRepository.findById(postId).get();
+        if (postEntity.getTitle() != null) {
+            postEntity.setTitle(postUpdateRequest.getTitle());
+        }
+        if  (postEntity.getContent().equals(null)) {
+            postEntity.setContent(postUpdateRequest.getContent());
+        }
+        postRepository.save(postEntity);
+        return PostConverter.from(postRepository.findById(postId).get());
+    }
+
+    @Override
+    public PostInfoResponse deletePost(Long postId) {
+        PostEntity postEntity = postRepository.findById(postId).get();
+        postRepository.deleteById(postId);
+        return PostConverter.from(postEntity);
+    }
+
 
 }
