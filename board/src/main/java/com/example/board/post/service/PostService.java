@@ -9,6 +9,6 @@ public interface PostService {
     PostInfoResponse createPost(PostCreateRequest postCreateRequest);
     Page<PostInfoResponse> findAllPost(Integer page, Integer size);
     PostInfoResponse findPost(Long postId);
-    PostInfoResponse updatePost(Long postId, PostUpdateRequest postUpdateRequest);
-    PostInfoResponse deletePost(Long postId);
+    PostInfoResponse updatePost(String token, Long postId, PostUpdateRequest postUpdateRequest);
+    PostInfoResponse deletePost(String token, Long postId);
 }
