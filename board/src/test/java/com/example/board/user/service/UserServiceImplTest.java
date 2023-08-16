@@ -4,10 +4,13 @@ import com.example.board.enums.ExceptionMessage;
 import com.example.board.exception.InvalidException;
 import com.example.board.user.model.request.UserCreateRequest;
 import com.example.board.user.repository.UserRepository;
+import com.example.board.util.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -16,6 +19,11 @@ class UserServiceImplTest {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
 
     @Test
     @DisplayName("이메일에 '@'포함되어 있지 않으면, 예외를 던진다.")
@@ -24,7 +32,7 @@ class UserServiceImplTest {
         String testEmail = "testtest.com";
         String testPassword = "qwer1234";
 
-        UserServiceImpl testUserService = new UserServiceImpl(userRepository);
+        UserServiceImpl testUserService = new UserServiceImpl(passwordEncoder, userRepository, jwtTokenProvider);
         UserCreateRequest testUserCreateRequest = new UserCreateRequest(testEmail, testPassword);
 
         // when & then
@@ -40,7 +48,7 @@ class UserServiceImplTest {
         String testEmail = "test@test.com";
         String testPassword = "qwer";
 
-        UserServiceImpl testUserService = new UserServiceImpl(userRepository);
+        UserServiceImpl testUserService = new UserServiceImpl(passwordEncoder, userRepository, jwtTokenProvider);
         UserCreateRequest testUserCreateRequest = new UserCreateRequest(testEmail, testPassword);
 
         // when & then
