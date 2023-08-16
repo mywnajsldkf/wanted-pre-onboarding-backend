@@ -1,5 +1,7 @@
 package com.example.board.post.service;
 
+import com.example.board.enums.ExceptionMessage;
+import com.example.board.exception.AuthorizationException;
 import com.example.board.post.converter.PostConverter;
 import com.example.board.post.entity.PostEntity;
 import com.example.board.post.model.request.PostCreateRequest;
@@ -43,10 +45,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostInfoResponse updatePost(String token, Long postId, PostUpdateRequest postUpdateRequest) {
         String email = jwtTokenProvider.parseJwtToken(token);
-        if (userRepository.findUserEntityByEmail(email) == null) {
-            throw new RuntimeException("권한이 없는 계정입니다.");
-        }
-        
+        checkUserAuthorization(email);
+
         PostEntity postEntity = postRepository.findById(postId).get();
         if (postEntity.getTitle() != null) {
             postEntity.setTitle(postUpdateRequest.getTitle());
@@ -62,13 +62,15 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostInfoResponse deletePost(String token, Long postId) {
         String email = jwtTokenProvider.parseJwtToken(token);
-        if (userRepository.findUserEntityByEmail(email) == null) {
-            throw new RuntimeException("권한이 없는 계정입니다.");
-        }
+        checkUserAuthorization(email);
         PostEntity postEntity = postRepository.findById(postId).get();
         postRepository.deleteById(postId);
         return PostConverter.from(postEntity);
     }
 
-
+    void checkUserAuthorization(String email) {
+        if (userRepository.findUserEntityByEmail(email) == null) {
+            throw new AuthorizationException(ExceptionMessage.ACCOUNT_IS_NOT_VALID.getMessage());
+        }
+    }
 }
