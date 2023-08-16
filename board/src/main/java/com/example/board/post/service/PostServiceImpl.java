@@ -6,6 +6,8 @@ import com.example.board.post.model.request.PostCreateRequest;
 import com.example.board.post.model.request.PostUpdateRequest;
 import com.example.board.post.model.response.PostInfoResponse;
 import com.example.board.post.repository.PostRepository;
+import com.example.board.user.repository.UserRepository;
+import com.example.board.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
     @Override
     public PostInfoResponse createPost(PostCreateRequest postCreateRequest) {
         PostEntity postEntity = PostConverter.to(postCreateRequest);
@@ -37,7 +41,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostInfoResponse updatePost(Long postId, PostUpdateRequest postUpdateRequest) {
+    public PostInfoResponse updatePost(String token, Long postId, PostUpdateRequest postUpdateRequest) {
+        String email = jwtTokenProvider.parseJwtToken(token);
+        if (userRepository.findUserEntityByEmail(email) == null) {
+            throw new RuntimeException("권한이 없는 계정입니다.");
+        }
+        
         PostEntity postEntity = postRepository.findById(postId).get();
         if (postEntity.getTitle() != null) {
             postEntity.setTitle(postUpdateRequest.getTitle());
@@ -45,12 +54,17 @@ public class PostServiceImpl implements PostService {
         if  (postEntity.getContent().equals(null)) {
             postEntity.setContent(postUpdateRequest.getContent());
         }
+        postEntity.setUserId(email);
         postRepository.save(postEntity);
         return PostConverter.from(postRepository.findById(postId).get());
     }
 
     @Override
-    public PostInfoResponse deletePost(Long postId) {
+    public PostInfoResponse deletePost(String token, Long postId) {
+        String email = jwtTokenProvider.parseJwtToken(token);
+        if (userRepository.findUserEntityByEmail(email) == null) {
+            throw new RuntimeException("권한이 없는 계정입니다.");
+        }
         PostEntity postEntity = postRepository.findById(postId).get();
         postRepository.deleteById(postId);
         return PostConverter.from(postEntity);

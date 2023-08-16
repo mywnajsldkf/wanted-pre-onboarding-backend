@@ -40,14 +40,16 @@ public class PostController {
 
     @PatchMapping()
     @ResponseBody
-    public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> updatePost(@RequestParam(name = "postId") Long postId,
+    public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> updatePost(@RequestHeader(name = "token") String token,
+                                                                             @RequestParam(name = "postId") Long postId,
                                                                              @RequestBody PostUpdateRequest postUpdateRequest) {
-        return ApiResponseGenerator.success(postService.updatePost(postId, postUpdateRequest), HttpStatus.OK, MessageCode.SUCCESS);
+        return ApiResponseGenerator.success(postService.updatePost(token, postId, postUpdateRequest), HttpStatus.OK, MessageCode.SUCCESS);
     }
 
     @DeleteMapping()
     @ResponseBody
-    public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> deletePost(@RequestParam(name = "postId") Long postId) {
-        return ApiResponseGenerator.success(postService.deletePost(postId), HttpStatus.OK, MessageCode.RESOURCE_DELETED);
+    public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> deletePost(@RequestHeader(name = "token") String token,
+                                                                             @RequestParam(name = "postId") Long postId) {
+        return ApiResponseGenerator.success(postService.deletePost(token, postId), HttpStatus.OK, MessageCode.RESOURCE_DELETED);
     }
 }
