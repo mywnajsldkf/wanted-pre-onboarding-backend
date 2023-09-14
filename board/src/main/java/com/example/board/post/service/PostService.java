@@ -6,7 +6,7 @@ import com.example.board.post.model.response.PostInfoResponse;
 import org.springframework.data.domain.Page;
 
 public interface PostService {
-    PostInfoResponse createPost(PostCreateRequest postCreateRequest);
+    PostInfoResponse createPost(String token, PostCreateRequest postCreateRequest);
     Page<PostInfoResponse> findAllPost(Integer page, Integer size);
     PostInfoResponse findPost(Long postId);
     PostInfoResponse updatePost(String token, Long postId, PostUpdateRequest postUpdateRequest);

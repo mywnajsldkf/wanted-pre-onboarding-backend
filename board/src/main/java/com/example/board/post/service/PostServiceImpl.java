@@ -19,9 +19,15 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+
     @Override
-    public PostInfoResponse createPost(PostCreateRequest postCreateRequest) {
+    public PostInfoResponse createPost(String token, PostCreateRequest postCreateRequest) {
+        String email = jwtTokenProvider.parseJwtToken(token);
+        if (userRepository.findUserEntityByEmail(email) == null) {
+            throw new RuntimeException("권한이 없는 계정입니다.");
+        }
         PostEntity postEntity = PostConverter.to(postCreateRequest);
+        postEntity.setUserId(email);
         postRepository.save(postEntity);
         return PostConverter.from(postEntity);
     }

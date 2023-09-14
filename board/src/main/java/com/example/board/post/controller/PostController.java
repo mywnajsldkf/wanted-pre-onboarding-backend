@@ -10,7 +10,10 @@ import com.example.board.support.MessageCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,9 +22,10 @@ public class PostController {
     private final PostServiceImpl postService;
 
     @PostMapping
-    @ResponseBody
-    public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> createPost(@RequestBody PostCreateRequest request) {
-        return ApiResponseGenerator.success(postService.createPost(request), HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
+    public ResponseEntity<PostInfoResponse> createPost(@RequestHeader(name = "token") String token,
+                                                       @RequestBody PostCreateRequest requestDto) {
+        PostInfoResponse postInfoResponse = postService.createPost(token, requestDto);
+        return ResponseEntity.created(URI.create("/api/post")).body(postInfoResponse);
     }
 
     @GetMapping
