@@ -75,6 +75,4 @@ public class PostServiceImpl implements PostService {
         postRepository.deleteById(postId);
         return PostConverter.from(postEntity);
     }
-
-
 }

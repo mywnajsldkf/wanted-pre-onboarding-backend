@@ -23,6 +23,5 @@ public class PostConverter {
                 content(postEntity.getContent()).
                 userId(postEntity.getUserId()).
                 build();
-
     }
 }
