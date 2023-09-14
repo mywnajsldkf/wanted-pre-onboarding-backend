@@ -4,9 +4,9 @@ import com.example.board.enums.ExceptionMessage;
 import com.example.board.exception.InvalidException;
 import com.example.board.user.converter.UserConverter;
 import com.example.board.user.entity.UserEntity;
-import com.example.board.user.model.request.UserLoginRequest;
+import com.example.board.user.model.request.LoginRequestDto;
 import com.example.board.user.model.request.UserRequestDto;
-import com.example.board.user.model.response.TokenInfoResponse;
+import com.example.board.user.model.response.TokenResponseDto;
 import com.example.board.user.model.response.UserResponseDto;
 import com.example.board.user.repository.UserRepository;
 import com.example.board.util.JwtTokenProvider;
@@ -35,22 +35,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenInfoResponse loginUser(UserLoginRequest userLoginRequest) {
-        validateEmailAddress(userLoginRequest.getEmail());
-        validatePasswordLength(userLoginRequest.getPassword());
-        TokenInfoResponse tokenInfoResponse = new TokenInfoResponse();
-        if (userRepository.findUserEntityByEmail(userLoginRequest.getEmail()) == null) {
+    public TokenResponseDto loginUser(LoginRequestDto loginRequestDto) {
+        validateEmailAddress(loginRequestDto.getEmail());
+        validatePasswordLength(loginRequestDto.getPassword());
+
+        if (userRepository.findUserEntityByEmail(loginRequestDto.getEmail()) == null) {
             // TODO: 커스텀 exception으로 수정
             throw new RuntimeException("가입자 정보가 없습니다.");
         }
 
-        if (!passwordEncoder.matches(userLoginRequest.getPassword(), userRepository.findUserEntityByEmail(userLoginRequest.getEmail()).getPassword())) {
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), userRepository.findUserEntityByEmail(loginRequestDto.getEmail()).getPassword())) {
             // TODO: 커스텀 exception으로 수정
             throw new RuntimeException("가입자 정보가 없습니다.");
         }
-        String accessToken = jwtTokenProvider.createAuthToken(userLoginRequest.getEmail());
-        String refreshToken = jwtTokenProvider.createRefreshToken(userLoginRequest.getEmail());
-        return tokenInfoResponse.builder().
+        String accessToken = jwtTokenProvider.createAuthToken(loginRequestDto.getEmail());
+        String refreshToken = jwtTokenProvider.createRefreshToken(loginRequestDto.getEmail());
+
+        TokenResponseDto tokenResponseDto = new TokenResponseDto();
+
+        return tokenResponseDto.builder().
                 accessToken(accessToken).
                 refreshToken(refreshToken).
                 build();
