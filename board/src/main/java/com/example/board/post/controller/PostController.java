@@ -51,10 +51,11 @@ public class PostController {
         return ResponseEntity.ok().body(postInfoResponse);
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     @ResponseBody
-    public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> deletePost(@RequestHeader(name = "token") String token,
-                                                                             @RequestParam(name = "postId") Long postId) {
-        return ApiResponseGenerator.success(postService.deletePost(token, postId), HttpStatus.OK, MessageCode.RESOURCE_DELETED);
+    public ResponseEntity<PostInfoResponse> deletePost(@RequestHeader(name = "token") String token,
+                                                       @RequestParam(name = "postId") Long postId) {
+        PostInfoResponse postInfoResponse = postService.deletePost(token, postId);
+        return ResponseEntity.ok().body(postInfoResponse);
     }
 }
