@@ -42,12 +42,13 @@ public class PostController {
         return ResponseEntity.ok().body(postInfoResponse);
     }
 
-    @PatchMapping()
+    @PatchMapping
     @ResponseBody
-    public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> updatePost(@RequestHeader(name = "token") String token,
-                                                                             @RequestParam(name = "postId") Long postId,
-                                                                             @RequestBody PostUpdateRequest postUpdateRequest) {
-        return ApiResponseGenerator.success(postService.updatePost(token, postId, postUpdateRequest), HttpStatus.OK, MessageCode.SUCCESS);
+    public ResponseEntity<PostInfoResponse> updatePost(@RequestHeader(name = "token") String token,
+                                                       @RequestParam(name = "postId") Long postId,
+                                                       @RequestBody PostUpdateRequest postUpdateRequest) {
+        PostInfoResponse postInfoResponse = postService.updatePost(token, postId, postUpdateRequest);
+        return ResponseEntity.ok().body(postInfoResponse);
     }
 
     @DeleteMapping()
