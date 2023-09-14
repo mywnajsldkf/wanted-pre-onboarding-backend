@@ -1,12 +1,12 @@
 package com.example.board.user.service;
 
-import com.example.board.user.model.request.UserCreateRequest;
 import com.example.board.user.model.request.UserLoginRequest;
+import com.example.board.user.model.request.UserRequestDto;
 import com.example.board.user.model.response.TokenInfoResponse;
-import com.example.board.user.model.response.UserInfoResponse;
+import com.example.board.user.model.response.UserResponseDto;
 
 public interface UserService {
-    UserInfoResponse createUser(UserCreateRequest userCreateRequest);
+    UserResponseDto createUser(UserRequestDto userRequestDto);
 
     TokenInfoResponse loginUser(UserLoginRequest userLoginRequest);
 }

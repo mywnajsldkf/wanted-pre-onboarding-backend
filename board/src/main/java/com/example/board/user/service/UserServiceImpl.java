@@ -4,10 +4,10 @@ import com.example.board.enums.ExceptionMessage;
 import com.example.board.exception.InvalidException;
 import com.example.board.user.converter.UserConverter;
 import com.example.board.user.entity.UserEntity;
-import com.example.board.user.model.request.UserCreateRequest;
 import com.example.board.user.model.request.UserLoginRequest;
+import com.example.board.user.model.request.UserRequestDto;
 import com.example.board.user.model.response.TokenInfoResponse;
-import com.example.board.user.model.response.UserInfoResponse;
+import com.example.board.user.model.response.UserResponseDto;
 import com.example.board.user.repository.UserRepository;
 import com.example.board.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +24,11 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public UserInfoResponse createUser(UserCreateRequest userCreateRequest) {
-        validateEmailAddress(userCreateRequest.getEmail());
-        validatePasswordLength(userCreateRequest.getPassword());
-        userCreateRequest.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
-        UserEntity userEntity = UserConverter.to(userCreateRequest);
+    public UserResponseDto createUser(UserRequestDto userRequestDto) {
+        validateEmailAddress(userRequestDto.getEmail());
+        validatePasswordLength(userRequestDto.getPassword());
+        userRequestDto.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        UserEntity userEntity = UserConverter.to(userRequestDto);
         userRepository.save(userEntity);
 
         return UserConverter.from(userEntity);
