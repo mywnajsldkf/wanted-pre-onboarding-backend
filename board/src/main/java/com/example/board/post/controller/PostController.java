@@ -38,8 +38,9 @@ public class PostController {
 
     @GetMapping("/detail")
     @ResponseBody
-    public ApiResponse<ApiResponse.SuccessBody<PostInfoResponse>> findPost(@RequestParam(name = "postId") Long postId) {
-        return ApiResponseGenerator.success(postService.findPost(postId), HttpStatus.OK, MessageCode.SUCCESS);
+    public ResponseEntity<PostInfoResponse> findPost(@RequestParam(name = "postId") Long postId) {
+        PostInfoResponse postInfoResponse = postService.findPost(postId);
+        return ResponseEntity.ok().body(postInfoResponse);
     }
 
     @PatchMapping()
