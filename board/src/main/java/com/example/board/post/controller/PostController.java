@@ -29,11 +29,10 @@ public class PostController {
     }
 
     @GetMapping
-    @ResponseBody
-    public ApiResponse<ApiResponse.SuccessBody<Page<PostInfoResponse>>> findAllPost(
-            @RequestParam(name = "page") int page,
-            @RequestParam(name = "size") int size) {
-        return ApiResponseGenerator.success(postService.findAllPost(page, size), HttpStatus.OK, MessageCode.SUCCESS);
+    public ResponseEntity<Page<PostInfoResponse>> findAllPost(@RequestParam(name = "page") int page,
+                                                              @RequestParam(name = "size") int size) {
+        Page<PostInfoResponse> pageResponse = postService.findPostPage(page, size);
+        return ResponseEntity.ok().body(pageResponse);
     }
 
     @GetMapping("/detail")

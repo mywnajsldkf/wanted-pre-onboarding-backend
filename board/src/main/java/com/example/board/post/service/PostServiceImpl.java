@@ -33,7 +33,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<PostInfoResponse> findAllPost(Integer page, Integer size) {
+    public Page<PostInfoResponse> findPostPage(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<PostEntity> postEntities = postRepository.findAll(pageRequest);
         Page<PostInfoResponse> postInfoResponses = postEntities.map(postEntity -> new PostInfoResponse(postEntity));
