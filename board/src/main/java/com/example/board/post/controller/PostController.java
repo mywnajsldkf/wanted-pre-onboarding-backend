@@ -32,14 +32,12 @@ public class PostController {
     }
 
     @GetMapping("/detail")
-    @ResponseBody
     public ResponseEntity<PostInfoResponse> findPost(@RequestParam(name = "postId") Long postId) {
         PostInfoResponse postInfoResponse = postService.findPost(postId);
         return ResponseEntity.ok().body(postInfoResponse);
     }
 
     @PatchMapping
-    @ResponseBody
     public ResponseEntity<PostInfoResponse> updatePost(@RequestHeader(name = "token") String token,
                                                        @RequestParam(name = "postId") Long postId,
                                                        @RequestBody PostUpdateRequest postUpdateRequest) {
@@ -48,7 +46,6 @@ public class PostController {
     }
 
     @DeleteMapping
-    @ResponseBody
     public ResponseEntity<PostInfoResponse> deletePost(@RequestHeader(name = "token") String token,
                                                        @RequestParam(name = "postId") Long postId) {
         PostInfoResponse postInfoResponse = postService.deletePost(token, postId);
