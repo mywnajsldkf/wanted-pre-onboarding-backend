@@ -6,7 +6,7 @@ import com.example.board.user.converter.UserConverter;
 import com.example.board.user.entity.UserEntity;
 import com.example.board.user.model.request.LoginRequestDto;
 import com.example.board.user.model.request.UserRequestDto;
-import com.example.board.user.model.response.TokenResponseDto;
+import com.example.board.user.model.response.LoginResponseDto;
 import com.example.board.user.model.response.UserResponseDto;
 import com.example.board.user.repository.UserRepository;
 import com.example.board.util.JwtTokenProvider;
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenResponseDto loginUser(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
         validateEmailAddress(loginRequestDto.getEmail());
         validatePasswordLength(loginRequestDto.getPassword());
 
@@ -51,9 +51,9 @@ public class UserServiceImpl implements UserService {
         String accessToken = jwtTokenProvider.createAuthToken(loginRequestDto.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken(loginRequestDto.getEmail());
 
-        TokenResponseDto tokenResponseDto = new TokenResponseDto();
+        LoginResponseDto loginResponseDto = new LoginResponseDto();
 
-        return tokenResponseDto.builder().
+        return loginResponseDto.builder().
                 accessToken(accessToken).
                 refreshToken(refreshToken).
                 build();

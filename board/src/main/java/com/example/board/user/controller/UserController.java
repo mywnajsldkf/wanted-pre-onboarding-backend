@@ -2,7 +2,7 @@ package com.example.board.user.controller;
 
 import com.example.board.user.model.request.LoginRequestDto;
 import com.example.board.user.model.request.UserRequestDto;
-import com.example.board.user.model.response.TokenResponseDto;
+import com.example.board.user.model.response.LoginResponseDto;
 import com.example.board.user.model.response.UserResponseDto;
 import com.example.board.user.service.UserServiceImpl;
 import jakarta.servlet.http.Cookie;
@@ -26,10 +26,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> loginUser(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
-        TokenResponseDto tokenResponseDto = userService.loginUser(requestDto);
-        Cookie cookie = new Cookie("token", tokenResponseDto.getAccessToken());
+    public ResponseEntity<LoginResponseDto> loginUser(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
+        LoginResponseDto loginResponseDto = userService.loginUser(requestDto);
+        Cookie cookie = new Cookie("token", loginResponseDto.getAccessToken());
         response.addCookie(cookie);
-        return ResponseEntity.ok().body(tokenResponseDto);
+        return ResponseEntity.ok().body(loginResponseDto);
     }
 }
