@@ -1,6 +1,8 @@
 package com.example.board.user.controller;
 
+import com.example.board.user.model.request.LoginRequestDto;
 import com.example.board.user.model.request.UserRequestDto;
+import com.example.board.user.model.response.LoginResponseDto;
 import com.example.board.user.model.response.UserResponseDto;
 import com.example.board.user.service.UserServiceImpl;
 import com.google.gson.Gson;
@@ -85,6 +87,41 @@ class UserControllerTest {
         return UserResponseDto.builder()
                 .email("test@test.test")
                 .password("12341234")
+                .build();
+    }
+
+    @DisplayName("로그인 성공")
+    @Test
+    void loginSuccess() throws Exception {
+        // given
+        LoginRequestDto request = loginRequest();
+        LoginResponseDto response = loginResponse();
+
+        doReturn(response).when(userService)
+                .loginUser(any(LoginRequestDto.class));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/user/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new Gson().toJson(request))
+        );
+
+        // then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+    }
+
+    private LoginRequestDto loginRequest() {
+        return LoginRequestDto.builder()
+                .email("test@test.test")
+                .password("12341234")
+                .build();
+    }
+
+    private LoginResponseDto loginResponse() {
+        return LoginResponseDto.builder()
+                .accessToken("mockAccessToken")
+                .refreshToken("mockRefreshToken")
                 .build();
     }
 }
