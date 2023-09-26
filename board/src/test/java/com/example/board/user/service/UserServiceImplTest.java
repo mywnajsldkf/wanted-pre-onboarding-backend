@@ -24,29 +24,48 @@ class UserServiceImplTest {
         String testEmail = "testtest.com";
         String testPassword = "qwer1234";
 
-        UserServiceImpl testUserService = new UserServiceImpl(userRepository);
-        UserCreateRequest testUserCreateRequest = new UserCreateRequest(testEmail, testPassword);
+        @Nested
+        @DisplayName("이메일에 @가 없으면")
+        class Context_without_at {
+            // given
+            UserRequestDto request = userRequest("testtest.test", "12341234");
 
-        // when & then
-        assertThatThrownBy(() -> testUserService.createUser(testUserCreateRequest))
-                .isInstanceOf(InvalidException.class)
-                .hasMessageContaining(ExceptionMessage.INVALID_EMAIL_ADDRESS.getMessage());
+            @Test
+            @DisplayName("오류 메시지(유효하지 않는 이메일 형식)를 던진다.")
+            /**
+             * 질문: 예외 테스트는 목 객체를 생성할 필요없으니까?
+             */
+            void it_returns_exception_invalid_email_address() {
+                // when & then
+                assertEquals(ExceptionMessage.INVALID_EMAIL_ADDRESS.getMessage(),
+                        assertThrows(InvalidException.class, () -> {
+                            userService.createUser(request);
+                        }).getMessage());
+            }
+        }
+
+        @Nested
+        @DisplayName("비밀번호 길이가 8글자 미만이면")
+        class Password_length_under_8 {
+            // given
+            UserRequestDto request = userRequest("test@test.test", "1234");
+
+            @Test
+            @DisplayName("오류 메시지(비밀번호 길이가 8글자 미만)을 던진다.")
+            void it_returns_exception_invalid_password_length() {
+                // when & then
+                assertEquals(ExceptionMessage.INVALID_PASSWORD_LENGTH.getMessage(),
+                        assertThrows(InvalidException.class, () -> {
+                            userService.createUser(request);
+                        }).getMessage());
+            }
+        }
     }
 
-    @Test
-    @DisplayName("비밀번호가 8글자 미만이면, 예외를 던진다.")
-    void throwExceptionIfPasswordIsUnder8() {
-        // given
-        String testEmail = "test@test.com";
-        String testPassword = "qwer";
-
-        UserServiceImpl testUserService = new UserServiceImpl(userRepository);
-        UserCreateRequest testUserCreateRequest = new UserCreateRequest(testEmail, testPassword);
-
-        // when & then
-        assertThatThrownBy(() -> testUserService.createUser(testUserCreateRequest))
-                .isInstanceOf(InvalidException.class)
-                .hasMessageContaining(ExceptionMessage.INVALID_PASSWORD_LENGTH.getMessage());
+    private UserRequestDto userRequest(String testEmail, String testPassword) {
+        return UserRequestDto.builder()
+                .email(testEmail)
+                .password(testPassword)
+                .build();
     }
-
 }
