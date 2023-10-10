@@ -64,13 +64,13 @@ public class UserServiceImpl implements UserService {
 
     private void validateEmailAddress(String email) {
         if (!email.contains(AT)) {
-            throw new InvalidException(ExceptionMessage.INVALID_EMAIL_ADDRESS.getMessage());
+            throw new InputValidationException(ExceptionMessage.INVALID_EMAIL_ADDRESS.getMessage());
         }
     }
 
     private void validatePasswordLength(String password) {
         if (password.length() < MIN_PASSWORD_LENGTH) {
-            throw new InvalidException(ExceptionMessage.INVALID_PASSWORD_LENGTH.getMessage());
+            throw new InputValidationException(ExceptionMessage.INVALID_PASSWORD_LENGTH.getMessage());
         }
     }
 }
