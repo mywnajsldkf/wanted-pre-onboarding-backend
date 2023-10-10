@@ -8,7 +8,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class UserConverter {
     public static UserEntity to(UserRequestDto userRequestDto) {
-        // TODO : userId 중복검사
         return UserEntity.builder().
                 email(userRequestDto.getEmail()).
                 password(userRequestDto.getPassword()).
