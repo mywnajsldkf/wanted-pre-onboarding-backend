@@ -1,7 +1,8 @@
 package com.example.board.user.service;
 
 import com.example.board.enums.ExceptionMessage;
-import com.example.board.exception.InvalidException;
+import com.example.board.exception.InputValidationException;
+import com.example.board.exception.UserNotFoundException;
 import com.example.board.user.converter.UserConverter;
 import com.example.board.user.entity.UserEntity;
 import com.example.board.user.model.request.LoginRequestDto;
@@ -43,14 +44,13 @@ public class UserServiceImpl implements UserService {
         validatePasswordLength(loginRequestDto.getPassword());
 
         if (userRepository.findUserEntityByEmail(loginRequestDto.getEmail()) == null) {
-            // TODO: 커스텀 exception으로 수정
-            throw new RuntimeException("가입자 정보가 없습니다.");
+            throw new UserNotFoundException(ExceptionMessage.USER_NOT_FOUND.getMessage());
         }
 
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), userRepository.findUserEntityByEmail(loginRequestDto.getEmail()).getPassword())) {
-            // TODO: 커스텀 exception으로 수정
-            throw new RuntimeException("가입자 정보가 없습니다.");
+            throw new UserNotFoundException(ExceptionMessage.PASSWORD_IS_NOT_RIGHT.getMessage());
         }
+
         String accessToken = jwtTokenProvider.createAuthToken(loginRequestDto.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken(loginRequestDto.getEmail());
 
